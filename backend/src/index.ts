@@ -1,6 +1,6 @@
 import cors from "cors";
 import "dotenv/config";
-import express from "express";
+import express, { type NextFunction, type Request, type Response } from "express";
 import { connectDb } from "./db/surreal.js";
 import { authRouter } from "./routes/auth.js";
 import { beansRouter } from "./routes/beans.js";
@@ -22,6 +22,11 @@ async function main() {
   app.use("/beans", beansRouter);
   app.use("/freezer-cycles", freezerCyclesRouter);
   app.use("/recipes", recipesRouter);
+
+  app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  });
 
   app.listen(PORT, () => {
     console.log(`Coffee Vault API listening on :${PORT}`);
