@@ -17,7 +17,7 @@ recipesRouter.get("/", async (req: AuthedRequest, res) => {
 recipesRouter.post("/", async (req: AuthedRequest, res) => {
   const input = req.body as RecipeInput;
   const [created] = await db.query<[Recipe[]]>(
-    "CREATE recipe CONTENT { ...$input, owner: <record> $owner }",
+    "CREATE recipe CONTENT ($input + { owner: <record> $owner })",
     { input, owner: req.user!.id },
   );
   res.status(201).json(created[0]);

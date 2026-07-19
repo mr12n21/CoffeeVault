@@ -17,7 +17,7 @@ export async function connectDb(): Promise<void> {
   await db.connect(`${SURREAL_URL}/rpc`, {
     namespace: SURREAL_NS,
     database: SURREAL_DB,
-    auth: {
+    authentication: {
       username: SURREAL_USER,
       password: SURREAL_PASS,
     },

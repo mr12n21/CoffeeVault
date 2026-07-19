@@ -30,7 +30,7 @@ freezerCyclesRouter.post("/", async (req: AuthedRequest, res) => {
   }
 
   const [created] = await db.query<[FreezerCycle[]]>(
-    "CREATE freezer_cycle CONTENT { ...$input, bean: <record> $bean }",
+    "CREATE freezer_cycle CONTENT ($input + { bean: <record> $bean })",
     { input, bean: input.bean },
   );
   res.status(201).json(created[0]);

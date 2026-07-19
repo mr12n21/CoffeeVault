@@ -17,7 +17,7 @@ beansRouter.get("/", async (req: AuthedRequest, res) => {
 beansRouter.post("/", async (req: AuthedRequest, res) => {
   const input = req.body as CoffeeBeanInput;
   const [created] = await db.query<[CoffeeBean[]]>(
-    "CREATE coffee_bean CONTENT { ...$input, owner: <record> $owner }",
+    "CREATE coffee_bean CONTENT ($input + { owner: <record> $owner })",
     { input, owner: req.user!.id },
   );
   res.status(201).json(created[0]);
