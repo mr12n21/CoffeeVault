@@ -1,0 +1,73 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    environment:
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE}
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment:
+      API_PORT: ${API_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      SURREAL_URL: http://surrealdb:8000
+      SURREAL_USER: ${SURREAL_USER}
+      SURREAL_PASS: ${SURREAL_PASS}
+      SURREAL_NS: ${SURREAL_NS}
+      SURREAL_DB: ${SURREAL_DB}
+    depends_on:
+      surrealdb:
+        condition: service_healthy
+
+  surrealdb-data-init:
+    image: busybox:latest
+    command: chown -R 65532:65532 /data
+    volumes:
+      - surreal_data:/data
+
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    restart: unless-stopped
+    entrypoint:
+      - /surreal
+      - start
+      - --user
+      - ${SURREAL_USER}
+      - --pass
+      - ${SURREAL_PASS}
+      - --bind
+      - 0.0.0.0:8000
+      - rocksdb:/data/coffeevault.db
+    healthcheck:
+      test: ["CMD", "/surreal", "is-ready", "--endpoint", "http://localhost:8000"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - surreal_data:/data
+    depends_on:
+      surrealdb-data-init:
+        condition: service_completed_successfully
+
+volumes:
+  caddy_data:
+  caddy_config:
+  surreal_data:

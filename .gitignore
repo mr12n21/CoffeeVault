@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Nuxt
+.nuxt/
+.output/
+.nitro/
+.cache/
+
+# Backend build
+backend/dist/
+
+# Env
+.env
+*.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# SurrealDB local data (if bind-mounted during dev)
+surrealdb/data/
