@@ -4,10 +4,7 @@ import type { CoffeeBean, CoffeeBeanInput } from "~/composables/types";
 const props = defineProps<{
   initial?: Partial<CoffeeBean>;
   submitLabel: string;
-}>();
-
-const emit = defineEmits<{
-  submit: [payload: Partial<CoffeeBeanInput>];
+  handleSubmit: (payload: Partial<CoffeeBeanInput>) => Promise<void>;
 }>();
 
 const form = reactive({
@@ -33,11 +30,11 @@ function toList(value: string): string[] {
     .filter(Boolean);
 }
 
-async function onSubmit() {
+async function onFormSubmit() {
   error.value = "";
   loading.value = true;
   try {
-    await emit("submit", {
+    await props.handleSubmit({
       name: form.name,
       roaster: form.roaster,
       origin_country: form.origin_country,
@@ -58,7 +55,7 @@ async function onSubmit() {
 </script>
 
 <template>
-  <form class="space-y-4 rounded-xl border border-stone-200 bg-white p-6 shadow-sm" @submit.prevent="onSubmit">
+  <form class="space-y-4 rounded-xl border border-stone-200 bg-white p-6 shadow-sm" @submit.prevent="onFormSubmit">
     <div class="grid gap-4 sm:grid-cols-2">
       <div class="space-y-1">
         <label class="text-sm font-medium text-stone-700">Name *</label>
