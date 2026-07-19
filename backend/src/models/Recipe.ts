@@ -1,3 +1,9 @@
+export interface RecipeStep {
+  label: string;
+  time_seconds?: number;
+  water_to_g?: number;
+}
+
 export interface Recipe {
   id: string;
   bean?: string;
@@ -6,7 +12,7 @@ export interface Recipe {
   grind_setting?: string;
   water_temp_profile?: string;
   filter_type?: string;
-  brew_steps: string[];
+  brew_steps: RecipeStep[];
   owner: string;
   created_at: string;
 }

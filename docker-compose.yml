@@ -18,6 +18,7 @@ services:
     restart: unless-stopped
     environment:
       NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE}
+      NUXT_API_BASE_SERVER: http://backend:${API_PORT}
     depends_on:
       - backend
 
@@ -28,11 +29,19 @@ services:
     environment:
       API_PORT: ${API_PORT}
       JWT_SECRET: ${JWT_SECRET}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      EXTRA_USERS: ${EXTRA_USERS}
+      UPLOADS_DIR: /data/uploads
+      TESSERACT_CACHE_DIR: /data/tesseract-cache
       SURREAL_URL: http://surrealdb:8000
       SURREAL_USER: ${SURREAL_USER}
       SURREAL_PASS: ${SURREAL_PASS}
       SURREAL_NS: ${SURREAL_NS}
       SURREAL_DB: ${SURREAL_DB}
+    volumes:
+      - uploads_data:/data/uploads
+      - tesseract_cache:/data/tesseract-cache
     depends_on:
       surrealdb:
         condition: service_healthy
@@ -71,3 +80,5 @@ volumes:
   caddy_data:
   caddy_config:
   surreal_data:
+  uploads_data:
+  tesseract_cache:

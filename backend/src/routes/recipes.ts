@@ -1,11 +1,17 @@
 import { Router } from "express";
 import { db } from "../db/surreal.js";
 import { requireAuth, type AuthedRequest } from "../middleware/requireAuth.js";
-import type { Recipe, RecipeInput } from "../models/Recipe.js";
+import type { Recipe } from "../models/Recipe.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { recipeCreateSchema, recipeUpdateSchema, validateBody } from "../validation.js";
 
 export const recipesRouter = Router();
 recipesRouter.use(requireAuth);
+
+recipesRouter.param("id", (req, res, next, id) => {
+  if (!/^recipe:[a-zA-Z0-9]+$/.test(id)) return res.status(400).json({ error: "Invalid id" });
+  next();
+});
 
 recipesRouter.get(
   "/",
@@ -20,11 +26,11 @@ recipesRouter.get(
 
 recipesRouter.post(
   "/",
+  validateBody(recipeCreateSchema),
   asyncHandler<AuthedRequest>(async (req, res) => {
-    const input = req.body as RecipeInput;
     const [created] = await db.query<[Recipe[]]>(
       "CREATE recipe CONTENT ($input + { owner: <record> $owner })",
-      { input, owner: req.user!.id },
+      { input: req.body, owner: req.user!.id },
     );
     res.status(201).json(created[0]);
   }),
@@ -44,6 +50,7 @@ recipesRouter.get(
 
 recipesRouter.put(
   "/:id",
+  validateBody(recipeUpdateSchema),
   asyncHandler<AuthedRequest>(async (req, res) => {
     const [existing] = await db.query<[Recipe[]]>(
       "SELECT id FROM recipe WHERE id = <record> $id AND owner = <record> $owner",
@@ -53,7 +60,7 @@ recipesRouter.put(
 
     const [updated] = await db.query<[Recipe[]]>("UPDATE <record> $id MERGE $input", {
       id: req.params.id,
-      input: req.body as Partial<RecipeInput>,
+      input: req.body,
     });
     res.json(updated[0]);
   }),

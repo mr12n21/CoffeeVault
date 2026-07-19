@@ -18,7 +18,7 @@ const form = reactive({
   grind_setting: props.initial?.grind_setting ?? "",
   water_temp_profile: props.initial?.water_temp_profile ?? "",
   filter_type: props.initial?.filter_type ?? "",
-  brew_steps: props.initial?.brew_steps?.join("\n") ?? "",
+  brew_steps: formatStepsToText(props.initial?.brew_steps ?? []),
 });
 
 const error = ref("");
@@ -35,10 +35,7 @@ async function onFormSubmit() {
       grind_setting: form.grind_setting || undefined,
       water_temp_profile: form.water_temp_profile || undefined,
       filter_type: form.filter_type || undefined,
-      brew_steps: form.brew_steps
-        .split("\n")
-        .map((s) => s.trim())
-        .filter(Boolean),
+      brew_steps: parseStepsFromText(form.brew_steps),
     });
   } catch (e) {
     error.value = "Something went wrong. Please try again.";
@@ -49,54 +46,58 @@ async function onFormSubmit() {
 </script>
 
 <template>
-  <form class="space-y-4 rounded-xl border border-stone-200 bg-white p-6 shadow-sm" @submit.prevent="onFormSubmit">
+  <form class="card space-y-4" @submit.prevent="onFormSubmit">
     <div class="grid gap-4 sm:grid-cols-2">
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Name *</label>
-        <input v-model="form.name" required class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Name *</label>
+        <input v-model="form.name" required class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Bean</label>
-        <select v-model="form.bean" class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso">
+        <label class="field-label">Bean</label>
+        <select v-model="form.bean" class="field-input">
           <option value="">None</option>
           <option v-for="b in beans" :key="b.id" :value="b.id">{{ b.name }} ({{ b.roaster }})</option>
         </select>
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Dripper</label>
-        <input v-model="form.dripper" placeholder="Orea V4, Mazelab Solo + HiFlux..." class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Dripper</label>
+        <input v-model="form.dripper" placeholder="Orea V4, Mazelab Solo + HiFlux..." class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Grind setting</label>
-        <input v-model="form.grind_setting" placeholder="1Zpresso ZP6 @ 3.2" class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Grind setting</label>
+        <input v-model="form.grind_setting" placeholder="1Zpresso ZP6 @ 3.2" class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Water temp profile</label>
-        <input v-model="form.water_temp_profile" placeholder="95°C bloom, drop to 86°C" class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Water temp profile</label>
+        <input v-model="form.water_temp_profile" placeholder="95°C bloom, drop to 86°C" class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Filter type</label>
-        <input v-model="form.filter_type" placeholder="Sibarist flat, wave..." class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Filter type</label>
+        <input v-model="form.filter_type" placeholder="Sibarist flat, wave..." class="field-input" />
       </div>
     </div>
 
     <div class="space-y-1">
-      <label class="text-sm font-medium text-stone-700">Brew steps (one per line)</label>
+      <label class="field-label">Brew steps (one per line)</label>
+      <p class="text-xs text-stone-500">
+        Optionally start a line with <code>MM:SS</code> to drive the brew-mode timer — this is also the format an AI can
+        generate directly.
+      </p>
       <textarea
         v-model="form.brew_steps"
-        rows="5"
-        placeholder="Bloom 40g @95C for 45s&#10;Main pour to 250g @86C&#10;Drawdown"
-        class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso"
+        rows="6"
+        placeholder="00:00 Bloom with 40g water, swirl&#10;00:45 Pour to 150g&#10;01:30 Pour to 250g&#10;02:30 Drawdown complete"
+        class="field-input font-mono text-sm"
       />
     </div>
 
     <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
 
-    <div class="flex gap-3">
-      <button type="submit" :disabled="loading" class="rounded-md bg-espresso px-4 py-2 font-medium text-crema hover:opacity-90 disabled:opacity-50">
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" :disabled="loading" class="btn-primary">
         {{ loading ? "Saving..." : submitLabel }}
       </button>
-      <NuxtLink to="/recipes" class="rounded-md border border-stone-300 px-4 py-2 font-medium text-stone-600">Cancel</NuxtLink>
+      <NuxtLink to="/recipes" class="btn-secondary">Cancel</NuxtLink>
     </div>
   </form>
 </template>

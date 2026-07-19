@@ -14,15 +14,6 @@ export function useAuth() {
   const config = useRuntimeConfig();
   const isAuthenticated = computed(() => Boolean(token.value));
 
-  async function register(email: string, password: string) {
-    const res = await $fetch<AuthResponse>(`${config.public.apiBase}/auth/register`, {
-      method: "POST",
-      body: { email, password },
-    });
-    token.value = res.token;
-    user.value = res.user;
-  }
-
   async function login(email: string, password: string) {
     const res = await $fetch<AuthResponse>(`${config.public.apiBase}/auth/login`, {
       method: "POST",
@@ -37,5 +28,5 @@ export function useAuth() {
     user.value = null;
   }
 
-  return { token, user, isAuthenticated, register, login, logout };
+  return { token, user, isAuthenticated, login, logout };
 }

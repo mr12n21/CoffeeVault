@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        espresso: "#3b2417",
-        crema: "#e8c39e",
+        espresso: "#181614",
+        crema: "#faf9f7",
       },
     },
   },

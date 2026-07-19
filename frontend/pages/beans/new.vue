@@ -12,7 +12,10 @@ async function handleSubmit(payload: Parameters<ReturnType<typeof useBeans>["cre
 
 <template>
   <div class="mx-auto max-w-xl">
-    <h1 class="text-2xl font-semibold text-espresso">Add Coffee Bean</h1>
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <h1 class="page-title">Add Coffee Bean</h1>
+      <NuxtLink to="/beans/import" class="link text-sm">Import from Kofio.cz instead</NuxtLink>
+    </div>
     <div class="mt-6">
       <BeanForm submit-label="Save bean" :handle-submit="handleSubmit" />
     </div>

@@ -10,8 +10,11 @@ export interface CoffeeBean {
   roast_level?: string;
   tasting_notes: string[];
   recommended_methods: string[];
+  notes?: string;
+  archived: boolean;
+  photos: string[];
   owner: string;
   created_at: string;
 }
 
-export type CoffeeBeanInput = Omit<CoffeeBean, "id" | "owner" | "created_at">;
+export type CoffeeBeanInput = Omit<CoffeeBean, "id" | "owner" | "created_at" | "photos">;

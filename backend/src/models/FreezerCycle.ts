@@ -4,6 +4,8 @@ export interface FreezerCycle {
   frozen_at: string;
   thawed_at?: string;
   notes?: string;
+  vial_number?: string;
+  weight_grams?: number;
   created_at: string;
 }
 

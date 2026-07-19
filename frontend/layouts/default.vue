@@ -16,26 +16,33 @@ async function onLogout() {
 
 <template>
   <div class="min-h-screen bg-stone-50 text-stone-900">
-    <header class="border-b border-stone-200 bg-white">
-      <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <NuxtLink to="/" class="text-lg font-semibold text-espresso">☕ Coffee Vault</NuxtLink>
-        <nav class="flex items-center gap-4 text-sm">
+    <header class="border-b border-stone-200 bg-gradient-to-b from-white to-stone-50/60">
+      <div class="mx-auto max-w-5xl px-4 py-3">
+        <div class="flex items-center justify-between gap-3">
+          <NuxtLink to="/" class="text-base font-semibold tracking-tight text-espresso sm:text-lg">Coffee Vault</NuxtLink>
+          <div class="flex items-center gap-3">
+            <span class="hidden text-sm text-stone-400 md:inline">{{ user?.email }}</span>
+            <button class="text-sm text-stone-500 underline decoration-stone-300 underline-offset-2 transition hover:text-stone-900" @click="onLogout">
+              Log out
+            </button>
+          </div>
+        </div>
+
+        <nav class="mt-3 flex gap-5 overflow-x-auto text-sm">
           <NuxtLink
             v-for="link in navLinks"
             :key="link.to"
             :to="link.to"
-            class="text-stone-600 hover:text-espresso"
-            :class="{ 'font-semibold text-espresso': route.path.startsWith(link.to) }"
+            class="shrink-0 whitespace-nowrap border-b-2 pb-2 transition"
+            :class="route.path.startsWith(link.to) ? 'border-espresso font-semibold text-stone-900' : 'border-transparent text-stone-500 hover:text-stone-900'"
           >
             {{ link.label }}
           </NuxtLink>
-          <span class="hidden text-stone-400 sm:inline">{{ user?.email }}</span>
-          <button class="text-stone-500 underline" @click="onLogout">Log out</button>
         </nav>
       </div>
     </header>
 
-    <main class="mx-auto max-w-5xl px-4 py-8">
+    <main class="mx-auto max-w-5xl px-4 py-6 sm:py-8">
       <slot />
     </main>
   </div>

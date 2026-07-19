@@ -18,6 +18,7 @@ const form = reactive({
   roast_level: props.initial?.roast_level ?? "",
   tasting_notes: props.initial?.tasting_notes?.join(", ") ?? "",
   recommended_methods: props.initial?.recommended_methods?.join(", ") ?? "",
+  notes: props.initial?.notes ?? "",
 });
 
 const error = ref("");
@@ -45,6 +46,7 @@ async function onFormSubmit() {
       roast_level: form.roast_level || undefined,
       tasting_notes: toList(form.tasting_notes),
       recommended_methods: toList(form.recommended_methods),
+      notes: form.notes || undefined,
     });
   } catch (e) {
     error.value = "Something went wrong. Please try again.";
@@ -55,59 +57,64 @@ async function onFormSubmit() {
 </script>
 
 <template>
-  <form class="space-y-4 rounded-xl border border-stone-200 bg-white p-6 shadow-sm" @submit.prevent="onFormSubmit">
+  <form class="card space-y-4" @submit.prevent="onFormSubmit">
     <div class="grid gap-4 sm:grid-cols-2">
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Name *</label>
-        <input v-model="form.name" required class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Name *</label>
+        <input v-model="form.name" required class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Roaster *</label>
-        <input v-model="form.roaster" required class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Roaster *</label>
+        <input v-model="form.roaster" required class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Origin country *</label>
-        <input v-model="form.origin_country" required class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Origin country *</label>
+        <input v-model="form.origin_country" required class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Roast level</label>
-        <input v-model="form.roast_level" placeholder="Light, Medium, Dark..." class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Roast level</label>
+        <input v-model="form.roast_level" placeholder="Light, Medium, Dark..." class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Variety</label>
-        <input v-model="form.variety" placeholder="Castillo, SL28 Peaberry..." class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Variety</label>
+        <input v-model="form.variety" placeholder="Castillo, SL28 Peaberry..." class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Process</label>
-        <input v-model="form.process" placeholder="Washed, Anaerobic..." class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Process</label>
+        <input v-model="form.process" placeholder="Washed, Anaerobic..." class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Roast date</label>
-        <input v-model="form.roast_date" type="date" class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Roast date</label>
+        <input v-model="form.roast_date" type="date" class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="text-sm font-medium text-stone-700">Purchase date</label>
-        <input v-model="form.purchase_date" type="date" class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+        <label class="field-label">Purchase date</label>
+        <input v-model="form.purchase_date" type="date" class="field-input" />
       </div>
     </div>
 
     <div class="space-y-1">
-      <label class="text-sm font-medium text-stone-700">Tasting notes (comma separated)</label>
-      <input v-model="form.tasting_notes" placeholder="cherry, cacao, jasmine" class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+      <label class="field-label">Tasting notes (comma separated)</label>
+      <input v-model="form.tasting_notes" placeholder="cherry, cacao, jasmine" class="field-input" />
     </div>
 
     <div class="space-y-1">
-      <label class="text-sm font-medium text-stone-700">Recommended methods (comma separated)</label>
-      <input v-model="form.recommended_methods" placeholder="V60, AeroPress" class="w-full rounded-md border border-stone-300 px-3 py-2 outline-none focus:border-espresso" />
+      <label class="field-label">Recommended methods (comma separated)</label>
+      <input v-model="form.recommended_methods" placeholder="V60, AeroPress" class="field-input" />
+    </div>
+
+    <div class="space-y-1">
+      <label class="field-label">Notes</label>
+      <textarea v-model="form.notes" rows="3" placeholder="Anything else worth remembering about this bean" class="field-input" />
     </div>
 
     <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
 
-    <div class="flex gap-3">
-      <button type="submit" :disabled="loading" class="rounded-md bg-espresso px-4 py-2 font-medium text-crema hover:opacity-90 disabled:opacity-50">
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" :disabled="loading" class="btn-primary">
         {{ loading ? "Saving..." : submitLabel }}
       </button>
-      <NuxtLink to="/beans" class="rounded-md border border-stone-300 px-4 py-2 font-medium text-stone-600">Cancel</NuxtLink>
+      <NuxtLink to="/beans" class="btn-secondary">Cancel</NuxtLink>
     </div>
   </form>
 </template>

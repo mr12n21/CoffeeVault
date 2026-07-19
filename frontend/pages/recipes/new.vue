@@ -12,7 +12,7 @@ async function handleSubmit(payload: Parameters<ReturnType<typeof useRecipes>["c
 
 <template>
   <div class="mx-auto max-w-xl">
-    <h1 class="text-2xl font-semibold text-espresso">New Recipe</h1>
+    <h1 class="page-title">New Recipe</h1>
     <div class="mt-6">
       <RecipeForm submit-label="Save recipe" :handle-submit="handleSubmit" />
     </div>

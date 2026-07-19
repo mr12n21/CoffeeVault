@@ -2,11 +2,17 @@ import { Router } from "express";
 import { db } from "../db/surreal.js";
 import { requireAuth, type AuthedRequest } from "../middleware/requireAuth.js";
 import type { CoffeeBean } from "../models/CoffeeBean.js";
-import type { FreezerCycle, FreezerCycleInput } from "../models/FreezerCycle.js";
+import type { FreezerCycle } from "../models/FreezerCycle.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { freezerCycleCreateSchema, freezerCycleUpdateSchema, validateBody } from "../validation.js";
 
 export const freezerCyclesRouter = Router();
 freezerCyclesRouter.use(requireAuth);
+
+freezerCyclesRouter.param("id", (req, res, next, id) => {
+  if (!/^freezer_cycle:[a-zA-Z0-9]+$/.test(id)) return res.status(400).json({ error: "Invalid id" });
+  next();
+});
 
 function withDates<T extends { frozen_at?: unknown; thawed_at?: unknown }>(input: T) {
   const result: Record<string, unknown> = { ...input };
@@ -36,15 +42,15 @@ freezerCyclesRouter.get(
 
 freezerCyclesRouter.post(
   "/",
+  validateBody(freezerCycleCreateSchema),
   asyncHandler<AuthedRequest>(async (req, res) => {
-    const input = req.body as FreezerCycleInput;
-    if (!(await assertBeanOwnership(input.bean, req.user!.id))) {
+    if (!(await assertBeanOwnership(req.body.bean, req.user!.id))) {
       return res.status(404).json({ error: "Bean not found" });
     }
 
     const [created] = await db.query<[FreezerCycle[]]>(
       "CREATE freezer_cycle CONTENT ($input + { bean: <record> $bean })",
-      { input: withDates(input), bean: input.bean },
+      { input: withDates(req.body), bean: req.body.bean },
     );
     res.status(201).json(created[0]);
   }),
@@ -64,6 +70,7 @@ freezerCyclesRouter.get(
 
 freezerCyclesRouter.put(
   "/:id",
+  validateBody(freezerCycleUpdateSchema),
   asyncHandler<AuthedRequest>(async (req, res) => {
     const [existing] = await db.query<[FreezerCycle[]]>(
       "SELECT id FROM freezer_cycle WHERE id = <record> $id AND bean.owner = <record> $owner",
@@ -71,7 +78,7 @@ freezerCyclesRouter.put(
     );
     if (!existing[0]) return res.status(404).json({ error: "Not found" });
 
-    const input = withDates(req.body as Partial<FreezerCycleInput>);
+    const input = withDates(req.body);
     const [updated] = await db.query<[FreezerCycle[]]>("UPDATE <record> $id MERGE $input", {
       id: req.params.id,
       input,

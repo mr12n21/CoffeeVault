@@ -4,11 +4,12 @@ export function useFreezerCycles() {
   const { apiFetch } = useApi();
 
   const listFreezerCycles = () => apiFetch<FreezerCycle[]>("/freezer-cycles");
+  const getFreezerCycle = (id: string) => apiFetch<FreezerCycle>(`/freezer-cycles/${id}`);
   const createFreezerCycle = (input: FreezerCycleInput) =>
     apiFetch<FreezerCycle>("/freezer-cycles", { method: "POST", body: input });
   const updateFreezerCycle = (id: string, input: Partial<FreezerCycleInput>) =>
     apiFetch<FreezerCycle>(`/freezer-cycles/${id}`, { method: "PUT", body: input });
   const deleteFreezerCycle = (id: string) => apiFetch<void>(`/freezer-cycles/${id}`, { method: "DELETE" });
 
-  return { listFreezerCycles, createFreezerCycle, updateFreezerCycle, deleteFreezerCycle };
+  return { listFreezerCycles, getFreezerCycle, createFreezerCycle, updateFreezerCycle, deleteFreezerCycle };
 }
