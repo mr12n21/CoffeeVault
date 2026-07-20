@@ -3,6 +3,7 @@ definePageMeta({ middleware: "auth" });
 
 const { createRecipe } = useRecipes();
 const router = useRouter();
+const { t } = useI18n();
 
 async function handleSubmit(payload: Parameters<ReturnType<typeof useRecipes>["createRecipe"]>[0]) {
   await createRecipe(payload);
@@ -12,9 +13,9 @@ async function handleSubmit(payload: Parameters<ReturnType<typeof useRecipes>["c
 
 <template>
   <div class="mx-auto max-w-xl">
-    <h1 class="page-title">New Recipe</h1>
+    <h1 class="page-title">{{ t("recipes.new.title") }}</h1>
     <div class="mt-6">
-      <RecipeForm submit-label="Save recipe" :handle-submit="handleSubmit" />
+      <RecipeForm :submit-label="t('recipes.form.save')" :handle-submit="handleSubmit" />
     </div>
   </div>
 </template>

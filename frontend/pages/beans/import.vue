@@ -6,6 +6,7 @@ definePageMeta({ middleware: "auth" });
 const { parseKofio } = useKofio();
 const { createBean } = useBeans();
 const router = useRouter();
+const { t } = useI18n();
 
 const mode = ref<"url" | "html">("url");
 const url = ref("");
@@ -23,7 +24,7 @@ async function onParse() {
     parsed.value = await parseKofio(mode.value === "url" ? { url: url.value } : { html: html.value });
     parseCount.value++;
   } catch (e) {
-    error.value = "Couldn't parse this page. Double-check the URL, or paste the page's HTML source instead.";
+    error.value = t("beans.import.error");
   } finally {
     parsing.value = false;
   }
@@ -37,37 +38,37 @@ async function handleSubmit(payload: Parameters<ReturnType<typeof useBeans>["cre
 
 <template>
   <div class="mx-auto max-w-xl">
-    <h1 class="page-title">Import from Kofio.cz</h1>
-    <p class="mt-1 text-sm text-stone-500">Paste a product link and we'll pull out roaster, origin, process, tasting notes, and more.</p>
-    <p class="mt-1 text-sm text-stone-500">
-      Not on Kofio? <NuxtLink to="/beans/ocr-import" class="link">Scan a bag photo instead</NuxtLink>.
+    <h1 class="page-title">{{ t("beans.import.title") }}</h1>
+    <p class="mt-1 text-sm text-stone-400">{{ t("beans.import.desc") }}</p>
+    <p class="mt-1 text-sm text-stone-400">
+      {{ t("beans.import.notOnKofio") }} <NuxtLink to="/beans/ocr-import" class="link">{{ t("beans.import.scanInstead") }}</NuxtLink>.
     </p>
 
     <div class="mt-6 card">
       <div class="flex gap-4 text-sm">
-        <button type="button" :class="mode === 'url' ? 'font-semibold text-stone-900' : 'text-stone-500'" @click="mode = 'url'">
-          From URL
+        <button type="button" :class="mode === 'url' ? 'font-semibold text-crema' : 'text-stone-500'" @click="mode = 'url'">
+          {{ t("beans.import.fromUrl") }}
         </button>
-        <button type="button" :class="mode === 'html' ? 'font-semibold text-stone-900' : 'text-stone-500'" @click="mode = 'html'">
-          Paste page HTML
+        <button type="button" :class="mode === 'html' ? 'font-semibold text-crema' : 'text-stone-500'" @click="mode = 'html'">
+          {{ t("beans.import.pasteHtml") }}
         </button>
       </div>
 
       <form class="mt-4 space-y-3" @submit.prevent="onParse">
-        <input v-if="mode === 'url'" v-model="url" type="url" required placeholder="https://www.kofio.cz/kava/..." class="field-input" />
-        <textarea v-else v-model="html" required rows="6" placeholder="Paste the page's HTML source here" class="field-input" />
+        <input v-if="mode === 'url'" v-model="url" type="url" required :placeholder="t('beans.import.urlPlaceholder')" class="field-input" />
+        <textarea v-else v-model="html" required rows="6" :placeholder="t('beans.import.htmlPlaceholder')" class="field-input" />
 
-        <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
+        <p v-if="error" class="text-sm text-red-400">{{ error }}</p>
 
         <button type="submit" :disabled="parsing" class="btn-primary">
-          {{ parsing ? "Parsing..." : "Fetch & Parse" }}
+          {{ parsing ? t("beans.import.parsing") : t("beans.import.fetchParse") }}
         </button>
       </form>
     </div>
 
     <div v-if="parsed" class="mt-6">
-      <p class="mb-3 text-sm text-stone-500">Review and adjust before saving:</p>
-      <BeanForm :key="parseCount" :initial="parsed" submit-label="Save bean" :handle-submit="handleSubmit" />
+      <p class="mb-3 text-sm text-stone-400">{{ t("beans.import.reviewAdjust") }}</p>
+      <BeanForm :key="parseCount" :initial="parsed" :submit-label="t('beans.form.save')" :handle-submit="handleSubmit" />
     </div>
   </div>
 </template>

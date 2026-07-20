@@ -35,8 +35,10 @@ export interface ParsedKofioBean {
   variety?: string;
   process?: string;
   roast_level?: string;
+  roast_date?: string;
   tasting_notes: string[];
   recommended_methods: string[];
+  notes?: string;
   source_url?: string;
 }
 

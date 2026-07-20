@@ -1,70 +1,67 @@
 # ☕ Coffee Vault & Recipe Prototyper
 
-Moderní, plně kontejnerizovaná self-hosted webová aplikace navržená pro hardcore nadšence do výběrové kávy, baristy a sběratele kávových zrn. Aplikace řeší kompletní lifecycle kávových zrn – od nákupu a automatického importu dat, přes precizní logování zmrazovacích cyklů v mrazáku, až po pokročilé prototypování a ladění extrakčních receptů pro high-end hračky (Zero-Bypass, HiFlux, variable-bottom drippery).
+A modern, fully containerized, **self-hosted** web application for hardcore specialty coffee enthusiasts, home baristas, and bean collectors. Everything — data, photos, OCR — runs on your own hardware. No cloud account, no subscription, no external service required.
+
+It manages the complete lifecycle of a coffee bean: from purchase and automated data import, through precise logging of single-dose freezer cycles, to advanced extraction prototyping for high-end gear (Zero-Bypass, HiFlux, variable-bottom drippers).
 
 ---
 
-## Klíčové vlastnosti
+## ✨ Key Features
 
-### 1. Inteligentní Kofio Metadata Parser
-Zapomeň na ruční přepisování. Aplikace obsahuje parser vrstvu, do které stačí vložit odkaz nebo surový textový dump z webu Kofio.cz. Systém automaticky vyextrahuje a strukturovaně uloží:
-*   Pražírnu, zemi původu a přesné sub-variety (např. Castillo, SL28 Peaberry, 74158).
-*   Detaily zpracování (metoda, délka a typ anaerobní fermentace, thermal shock).
-*   Kompletní chuťový profil (parsování chuťových tónů do tagů).
-*   Doporučené metody přípravy a stupně pražení.
+### 1. Intelligent Bean Import (Web Scraping & OCR)
+Forget manual data entry:
+* **Web scraping** — paste a product URL (Kofio.cz or any other public roaster page) and the parser pulls out roaster, origin, variety, process, roast level, and tasting notes automatically.
+* **OCR import** — no listing online? Photograph the bag (up to 3 photos) and the built-in OCR engine reads the label text and pre-fills what it can recognize.
+* **Structured metadata** — sub-varieties (Castillo, SL28 Peaberry, 74158...), processing details (co-ferment, anaerobic, thermal shock...), and tasting notes all land in searchable, taggable fields.
 
 ### 2. Advanced Freezer Tracking ("True Resting Age")
-Káva v mrazáku nestárne, respektive stárne výrazně pomaleji. Aplikace disponuje pokročilou logikou pro sledování freeze/thaw cyklů a počítá **skutečné stáří kávy od pražení (True Resting Age)**:
-*   `True Age = (Aktuální datum - Datum pražení) - Dny strávené v mrazáku`
-*   Vizuální časová osa a kalendář ti přesně řeknou, kdy je káva po vytažení z mrazáku v ideálním extrakčním okně (peak flavor).
+Built for anyone who portions and freezes beans in single-dose vials:
+* Log each freeze/thaw cycle per vial, with a 2-digit vial ID and gram weight so you know at a glance what's in tube #01.
+* The app computes **True Resting Age**: `True Age = (Today − Roast Date) − Days Spent Frozen`.
+* A calendar view shows roast dates and freeze/thaw events, and flags each bean's current stage — resting, peak window, declining, or past peak.
 
-### 3. Barista Recipe Engine & Prototypování
-Recepty pro náročné. Databázová schémata a UI jsou přizpůsobeny pro moderní soutěžní trendy v brewingu:
-*   **Hardware tracking:** Podpora pro pokročilé drippery (Mazelab Solo + HiFlux, Orea V4 s Open/Fast/Classic dny) a přesné nastavení mlýnků v mikronech/clicích (např. 1Zpresso ZP6).
-*   **Fyzika nálevů:** Logování pokročilých technik – split-temperature recepty (např. 95 °C pro aciditu, drop na 86 °C pro sladkost), typy papírových filtrů (Sibarist flat vs. wave vs. negotiated/vyhlazený) a hybridní práce s horní sprchou (dispersion screen).
-
----
-
-## Použitý Tech Stack
-
-Projekt je postaven jako distribuovaná, mikroslužební architektura běžící lokálně přes **Docker Compose**:
-
-*   **Reverse Proxy:** `Caddy` – zajišťuje bezpečné lokální směrování, SSL a serving statických souborů.
-*   **Frontend:** `Nuxt 3 / Vue 3` + `Tailwind CSS` – rychlé, reaktivní a vysoce skenovatelné baristické UI.
-*   **Backend API:** `Node.js / TypeScript` – zabezpečené pomocí **JWT (JSON Web Tokens)** pro relace a **bcrypt** pro hashování hesel.
-*   **Databáze:** `SurrealDB` – moderní multi-model databáze běžící v kontejneru. Využívá dokumentový model pro profily káv a grafové relace pro mapování receptů a zmrazovacích cyklů.
+### 3. Barista Recipe Engine & Brew Mode
+Recipes built for competition-level brewing:
+* **Hardware tracking** — dripper, filter type, grind setting (1Zpresso ZP6, Timemore C3...), and split-temperature water profiles (95 °C for acidity, dropping to 86 °C for sweetness).
+* **Timestamped steps** — write steps as plain `MM:SS action` lines, a format simple enough that an AI can generate a recipe you just paste in.
+* **Brew Mode** — run the recipe full-screen with an auto-advancing timer, so you're not touching your phone mid-pour.
 
 ---
 
-## Rychlé spuštění (Local Deployment)
+## 🛠️ Tech Stack
 
-Aplikace je navržena pro snadné nasazení na domácím serveru (např. Raspberry Pi, NAS, lokální PC).
+A distributed, containerized architecture running entirely via **Docker Compose**:
 
-1. Klonuj repozitář:
+* **Reverse Proxy:** `Caddy` — local routing and static file serving.
+* **Frontend:** `Nuxt 3` / `Vue 3` + `Tailwind CSS`.
+* **Backend API:** `Node.js` / `TypeScript` (Express) — `JWT` sessions, `bcrypt` password hashing, `zod` input validation, rate limiting.
+* **Database:** `SurrealDB` — a multi-model database using a document model for bean/recipe records and record links for relations between beans, freezer cycles, and recipes.
+* **OCR:** `Tesseract.js`, running fully locally — no external API calls, no images leave your server.
+
+There's no public sign-up. A single admin account (plus any others you list) is created from environment variables on first boot — see `.env.example`.
+
+---
+
+## 🚀 Quick Start (Local Deployment)
+
+Designed for easy deployment on a home server — Raspberry Pi, NAS, or any local machine.
+
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/vys-uzivatelske-jmeno/coffee-vault.git
-   cd coffee-vault
+   git clone https://github.com/mr12n21/CoffeeVault.git
+   cd CoffeeVault
    ```
 
-2. Zkopíruj a uprav proměnné prostředí:
+2. **Set up environment variables:**
    ```bash
    cp .env.example .env
    ```
+   Edit `.env` — at minimum set `JWT_SECRET`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD`.
 
-3. Spusť celý stack přes Docker Compose:
+3. **Start the stack:**
    ```bash
-   docker compose up --build
+   docker compose up --build -d
    ```
 
-4. Otevři aplikaci v prohlížeči na [http://localhost](http://localhost).
-
----
-
-## Stav projektu
-
-Aktuálně obsahuje repozitář základní kostru (scaffold) celého stacku:
-*   Docker Compose síť se všemi 4 službami (Caddy, Nuxt, API, SurrealDB).
-*   SurrealDB schéma pro kávová zrna, zmrazovací cykly a recepty.
-*   Funkční registrace a přihlášení (JWT + bcrypt).
-
-Kofio parser a plné UI pro recepty/mrazák jsou plánované jako další iterace.
+4. **Open the app:**
+   Visit [http://localhost](http://localhost) in your browser.

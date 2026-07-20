@@ -9,6 +9,7 @@ const props = defineProps<{
 }>();
 
 const { listBeans } = useBeans();
+const { t } = useI18n();
 const { data: beans } = await useAsyncData<CoffeeBean[]>("beans-for-recipe-form", () => listBeans());
 
 const form = reactive({
@@ -38,7 +39,7 @@ async function onFormSubmit() {
       brew_steps: parseStepsFromText(form.brew_steps),
     });
   } catch (e) {
-    error.value = "Something went wrong. Please try again.";
+    error.value = t("recipes.form.error");
   } finally {
     loading.value = false;
   }
@@ -49,39 +50,40 @@ async function onFormSubmit() {
   <form class="card space-y-4" @submit.prevent="onFormSubmit">
     <div class="grid gap-4 sm:grid-cols-2">
       <div class="space-y-1">
-        <label class="field-label">Name *</label>
+        <label class="field-label">{{ t("recipes.form.name") }}</label>
         <input v-model="form.name" required class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="field-label">Bean</label>
+        <label class="field-label">{{ t("recipes.form.bean") }}</label>
         <select v-model="form.bean" class="field-input">
-          <option value="">None</option>
+          <option value="">{{ t("recipes.form.none") }}</option>
           <option v-for="b in beans" :key="b.id" :value="b.id">{{ b.name }} ({{ b.roaster }})</option>
         </select>
       </div>
       <div class="space-y-1">
-        <label class="field-label">Dripper</label>
-        <input v-model="form.dripper" placeholder="Orea V4, Mazelab Solo + HiFlux..." class="field-input" />
+        <label class="field-label">{{ t("recipes.form.dripper") }}</label>
+        <input v-model="form.dripper" :placeholder="t('recipes.form.dripperPlaceholder')" class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="field-label">Grind setting</label>
-        <input v-model="form.grind_setting" placeholder="1Zpresso ZP6 @ 3.2" class="field-input" />
+        <label class="field-label">{{ t("recipes.form.grindSetting") }}</label>
+        <input v-model="form.grind_setting" :placeholder="t('recipes.form.grindPlaceholder')" class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="field-label">Water temp profile</label>
-        <input v-model="form.water_temp_profile" placeholder="95°C bloom, drop to 86°C" class="field-input" />
+        <label class="field-label">{{ t("recipes.form.waterTemp") }}</label>
+        <input v-model="form.water_temp_profile" :placeholder="t('recipes.form.waterTempPlaceholder')" class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="field-label">Filter type</label>
-        <input v-model="form.filter_type" placeholder="Sibarist flat, wave..." class="field-input" />
+        <label class="field-label">{{ t("recipes.form.filterType") }}</label>
+        <input v-model="form.filter_type" :placeholder="t('recipes.form.filterPlaceholder')" class="field-input" />
       </div>
     </div>
 
     <div class="space-y-1">
-      <label class="field-label">Brew steps (one per line)</label>
+      <label class="field-label">{{ t("recipes.form.steps") }}</label>
       <p class="text-xs text-stone-500">
-        Optionally start a line with <code>MM:SS</code> to drive the brew-mode timer — this is also the format an AI can
-        generate directly.
+        <i18n-t keypath="recipes.form.stepsHint" tag="span">
+          <template #mmss><code>MM:SS</code></template>
+        </i18n-t>
       </p>
       <textarea
         v-model="form.brew_steps"
@@ -91,13 +93,13 @@ async function onFormSubmit() {
       />
     </div>
 
-    <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
+    <p v-if="error" class="text-sm text-red-400">{{ error }}</p>
 
     <div class="flex flex-wrap gap-3">
       <button type="submit" :disabled="loading" class="btn-primary">
-        {{ loading ? "Saving..." : submitLabel }}
+        {{ loading ? t("recipes.form.saving") : submitLabel }}
       </button>
-      <NuxtLink to="/recipes" class="btn-secondary">Cancel</NuxtLink>
+      <NuxtLink to="/recipes" class="btn-secondary">{{ t("recipes.form.cancel") }}</NuxtLink>
     </div>
   </form>
 </template>

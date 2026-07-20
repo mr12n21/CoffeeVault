@@ -7,6 +7,8 @@ const props = defineProps<{
   handleSubmit: (payload: Partial<CoffeeBeanInput>) => Promise<void>;
 }>();
 
+const { t } = useI18n();
+
 const form = reactive({
   name: props.initial?.name ?? "",
   roaster: props.initial?.roaster ?? "",
@@ -49,7 +51,7 @@ async function onFormSubmit() {
       notes: form.notes || undefined,
     });
   } catch (e) {
-    error.value = "Something went wrong. Please try again.";
+    error.value = t("beans.form.error");
   } finally {
     loading.value = false;
   }
@@ -60,61 +62,61 @@ async function onFormSubmit() {
   <form class="card space-y-4" @submit.prevent="onFormSubmit">
     <div class="grid gap-4 sm:grid-cols-2">
       <div class="space-y-1">
-        <label class="field-label">Name *</label>
+        <label class="field-label">{{ t("beans.form.name") }}</label>
         <input v-model="form.name" required class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="field-label">Roaster *</label>
+        <label class="field-label">{{ t("beans.form.roaster") }}</label>
         <input v-model="form.roaster" required class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="field-label">Origin country *</label>
+        <label class="field-label">{{ t("beans.form.origin") }}</label>
         <input v-model="form.origin_country" required class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="field-label">Roast level</label>
-        <input v-model="form.roast_level" placeholder="Light, Medium, Dark..." class="field-input" />
+        <label class="field-label">{{ t("beans.form.roastLevel") }}</label>
+        <input v-model="form.roast_level" :placeholder="t('beans.form.roastLevelPlaceholder')" class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="field-label">Variety</label>
-        <input v-model="form.variety" placeholder="Castillo, SL28 Peaberry..." class="field-input" />
+        <label class="field-label">{{ t("beans.form.variety") }}</label>
+        <input v-model="form.variety" :placeholder="t('beans.form.varietyPlaceholder')" class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="field-label">Process</label>
-        <input v-model="form.process" placeholder="Washed, Anaerobic..." class="field-input" />
+        <label class="field-label">{{ t("beans.form.process") }}</label>
+        <input v-model="form.process" :placeholder="t('beans.form.processPlaceholder')" class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="field-label">Roast date</label>
+        <label class="field-label">{{ t("beans.form.roastDate") }}</label>
         <input v-model="form.roast_date" type="date" class="field-input" />
       </div>
       <div class="space-y-1">
-        <label class="field-label">Purchase date</label>
+        <label class="field-label">{{ t("beans.form.purchaseDate") }}</label>
         <input v-model="form.purchase_date" type="date" class="field-input" />
       </div>
     </div>
 
     <div class="space-y-1">
-      <label class="field-label">Tasting notes (comma separated)</label>
-      <input v-model="form.tasting_notes" placeholder="cherry, cacao, jasmine" class="field-input" />
+      <label class="field-label">{{ t("beans.form.tastingNotes") }}</label>
+      <input v-model="form.tasting_notes" :placeholder="t('beans.form.tastingNotesPlaceholder')" class="field-input" />
     </div>
 
     <div class="space-y-1">
-      <label class="field-label">Recommended methods (comma separated)</label>
-      <input v-model="form.recommended_methods" placeholder="V60, AeroPress" class="field-input" />
+      <label class="field-label">{{ t("beans.form.methods") }}</label>
+      <input v-model="form.recommended_methods" :placeholder="t('beans.form.methodsPlaceholder')" class="field-input" />
     </div>
 
     <div class="space-y-1">
-      <label class="field-label">Notes</label>
-      <textarea v-model="form.notes" rows="3" placeholder="Anything else worth remembering about this bean" class="field-input" />
+      <label class="field-label">{{ t("beans.form.notes") }}</label>
+      <textarea v-model="form.notes" rows="3" :placeholder="t('beans.form.notesPlaceholder')" class="field-input" />
     </div>
 
-    <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
+    <p v-if="error" class="text-sm text-red-400">{{ error }}</p>
 
     <div class="flex flex-wrap gap-3">
       <button type="submit" :disabled="loading" class="btn-primary">
-        {{ loading ? "Saving..." : submitLabel }}
+        {{ loading ? t("beans.form.saving") : submitLabel }}
       </button>
-      <NuxtLink to="/beans" class="btn-secondary">Cancel</NuxtLink>
+      <NuxtLink to="/beans" class="btn-secondary">{{ t("beans.form.cancel") }}</NuxtLink>
     </div>
   </form>
 </template>

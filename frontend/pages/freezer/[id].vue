@@ -5,6 +5,7 @@ const route = useRoute();
 const router = useRouter();
 const { getFreezerCycle, updateFreezerCycle, deleteFreezerCycle } = useFreezerCycles();
 const { listBeans } = useBeans();
+const { t } = useI18n();
 
 const id = route.params.id as string;
 const { data: cycle, error } = await useAsyncData(`freezer-cycle-${id}`, () => getFreezerCycle(id));
@@ -33,14 +34,14 @@ async function onSubmit() {
     });
     await router.push("/freezer");
   } catch (e) {
-    formError.value = "Failed to save changes.";
+    formError.value = t("freezer.form.saveError");
   } finally {
     loading.value = false;
   }
 }
 
 async function onDelete() {
-  if (!confirm("Delete this freezer cycle?")) return;
+  if (!confirm(t("freezer.detail.confirmDelete"))) return;
   await deleteFreezerCycle(id);
   await router.push("/freezer");
 }
@@ -48,48 +49,48 @@ async function onDelete() {
 
 <template>
   <div class="mx-auto max-w-lg">
-    <p v-if="error" class="text-red-600">Freezer cycle not found.</p>
+    <p v-if="error" class="text-red-400">{{ t("freezer.detail.notFound") }}</p>
     <template v-else-if="cycle">
       <div class="flex items-center justify-between gap-3">
-        <h1 class="page-title">Edit Freeze Log</h1>
-        <button class="btn-danger-link shrink-0" @click="onDelete">Delete</button>
+        <h1 class="page-title">{{ t("freezer.detail.title") }}</h1>
+        <button class="btn-danger-link shrink-0" @click="onDelete">{{ t("freezer.index.delete") }}</button>
       </div>
       <p class="mt-1 text-sm text-stone-500">{{ beanName }}</p>
 
       <form class="card mt-6 space-y-4" @submit.prevent="onSubmit">
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-1">
-            <label class="field-label">Vial #</label>
+            <label class="field-label">{{ t("freezer.form.vial") }}</label>
             <input v-model="vialNumber" pattern="\d{2}" maxlength="2" class="field-input" />
           </div>
           <div class="space-y-1">
-            <label class="field-label">Weight (g)</label>
+            <label class="field-label">{{ t("freezer.form.weight") }}</label>
             <input v-model.number="weightGrams" type="number" min="1" max="5000" class="field-input" />
           </div>
         </div>
 
         <div class="space-y-1">
-          <label class="field-label">Frozen at</label>
+          <label class="field-label">{{ t("freezer.form.frozenAt") }}</label>
           <input v-model="frozenAt" type="date" class="field-input" />
         </div>
 
         <div class="space-y-1">
-          <label class="field-label">Thawed at</label>
+          <label class="field-label">{{ t("freezer.form.thawedAt") }}</label>
           <input v-model="thawedAt" type="date" class="field-input" />
         </div>
 
         <div class="space-y-1">
-          <label class="field-label">Notes</label>
+          <label class="field-label">{{ t("freezer.form.notes") }}</label>
           <input v-model="notes" class="field-input" />
         </div>
 
-        <p v-if="formError" class="text-sm text-red-600">{{ formError }}</p>
+        <p v-if="formError" class="text-sm text-red-400">{{ formError }}</p>
 
         <div class="flex flex-wrap gap-3">
           <button type="submit" :disabled="loading" class="btn-primary">
-            {{ loading ? "Saving..." : "Save changes" }}
+            {{ loading ? t("freezer.form.saving") : t("freezer.form.saveChanges") }}
           </button>
-          <NuxtLink to="/freezer" class="btn-secondary">Cancel</NuxtLink>
+          <NuxtLink to="/freezer" class="btn-secondary">{{ t("freezer.form.cancel") }}</NuxtLink>
         </div>
       </form>
     </template>
