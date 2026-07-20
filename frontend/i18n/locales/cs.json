@@ -146,8 +146,14 @@
       "error": "Zaznamenání mrazicího cyklu se nezdařilo.",
       "saveError": "Uložení změn se nezdařilo."
     },
-    "new": { "title": "Zaznamenat mrazení" },
-    "detail": { "title": "Upravit záznam mrazení", "notFound": "Mrazicí cyklus nenalezen.", "confirmDelete": "Smazat tento mrazicí cyklus?" }
+    "new": {
+      "title": "Zaznamenat mrazení"
+    },
+    "detail": {
+      "title": "Upravit záznam mrazení",
+      "notFound": "Mrazicí cyklus nenalezen.",
+      "confirmDelete": "Smazat tento mrazicí cyklus?"
+    }
   },
   "recipes": {
     "index": {
@@ -169,7 +175,7 @@
       "dripper": "Dripper",
       "dripperPlaceholder": "Orea V4, Mazelab Solo + HiFlux...",
       "grindSetting": "Nastavení mlýnku",
-      "grindPlaceholder": "1Zpresso ZP6 @ 3.2",
+      "grindPlaceholder": "1Zpresso ZP6, klik 3.2",
       "waterTemp": "Teplotní profil vody",
       "waterTempPlaceholder": "95 °C bloom, pokles na 86 °C",
       "filterType": "Typ filtru",
@@ -182,8 +188,15 @@
       "cancel": "Zrušit",
       "error": "Něco se pokazilo. Zkus to prosím znovu."
     },
-    "new": { "title": "Nový recept" },
-    "detail": { "editTitle": "Upravit {name}", "notFound": "Recept nenalezen.", "delete": "Smazat", "confirmDelete": "Smazat tento recept?" },
+    "new": {
+      "title": "Nový recept"
+    },
+    "detail": {
+      "editTitle": "Upravit {name}",
+      "notFound": "Recept nenalezen.",
+      "delete": "Smazat",
+      "confirmDelete": "Smazat tento recept?"
+    },
     "brew": {
       "notFound": "Recept nenalezen.",
       "noSteps": "Tento recept zatím nemá žádné kroky.",

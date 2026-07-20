@@ -4,8 +4,8 @@ export type RoastStatusKind = "resting" | "peak" | "declining" | "past_peak" | "
 
 export interface RoastStatus {
   trueAgeDays: number;
+  roundedDays: number;
   kind: RoastStatusKind;
-  label: string;
 }
 
 const MS_PER_DAY = 86_400_000;
@@ -13,6 +13,8 @@ const MS_PER_DAY = 86_400_000;
 // "True Resting Age" = calendar days since roast, minus any time spent frozen (coffee ages
 // far slower once frozen). Peak window (7–21 days) is a common rule of thumb for filter
 // roasts — deliberately simple and shown in the UI so it reads as a heuristic, not gospel.
+// Returns raw data only; the caller is responsible for turning `kind` + `roundedDays` into a
+// localized label (see calendar/index.vue), since this is a plain util with no i18n context.
 export function computeRoastStatus(bean: CoffeeBean, cycles: FreezerCycle[]): RoastStatus | null {
   if (!bean.roast_date) return null;
 
@@ -30,15 +32,16 @@ export function computeRoastStatus(bean: CoffeeBean, cycles: FreezerCycle[]): Ro
 
   const calendarAgeDays = Math.max(0, (now.getTime() - roastDate.getTime()) / MS_PER_DAY);
   const trueAgeDays = Math.max(0, calendarAgeDays - frozenDays);
-  const rounded = Math.round(trueAgeDays);
+  const roundedDays = Math.round(trueAgeDays);
 
-  if (isCurrentlyFrozen) {
-    return { trueAgeDays, kind: "frozen", label: `Frozen · ${rounded}d true age` };
-  }
-  if (trueAgeDays < 4) return { trueAgeDays, kind: "resting", label: `Resting · day ${rounded}` };
-  if (trueAgeDays <= 21) return { trueAgeDays, kind: "peak", label: `Peak window · day ${rounded}` };
-  if (trueAgeDays <= 35) return { trueAgeDays, kind: "declining", label: `Declining · day ${rounded}` };
-  return { trueAgeDays, kind: "past_peak", label: `Past peak · day ${rounded}` };
+  let kind: RoastStatusKind;
+  if (isCurrentlyFrozen) kind = "frozen";
+  else if (trueAgeDays < 4) kind = "resting";
+  else if (trueAgeDays <= 21) kind = "peak";
+  else if (trueAgeDays <= 35) kind = "declining";
+  else kind = "past_peak";
+
+  return { trueAgeDays, roundedDays, kind };
 }
 
 export function dateKey(d: Date): string {

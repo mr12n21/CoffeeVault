@@ -107,16 +107,16 @@ onUnmounted(() => {
           <div class="h-full rounded-full bg-crema/70 transition-[width] duration-700 ease-linear" :style="{ width: `${stepProgress}%` }" />
         </div>
       </div>
-      <p v-else class="mt-10 text-crema/70">This recipe has no steps yet.</p>
+      <p v-else class="mt-10 text-crema/70">{{ t("recipes.brew.noSteps") }}</p>
 
       <div class="mt-8 flex flex-wrap justify-center gap-3 sm:mt-10">
-        <button v-if="!started" class="rounded-md border border-crema/30 px-4 py-2 transition hover:border-crema/60" @click="prev">Prev</button>
+        <button v-if="!started" class="rounded-md border border-crema/30 px-4 py-2 transition hover:border-crema/60" @click="prev">{{ t("recipes.brew.prev") }}</button>
         <button v-if="!running" class="rounded-md bg-crema px-6 py-2 font-medium text-espresso shadow-[0_0_0_0_rgba(250,249,247,0.4)] transition hover:bg-white hover:shadow-[0_0_0_6px_rgba(250,249,247,0.12)]" @click="start">
-          {{ started ? "Resume" : "Start" }}
+          {{ started ? t("recipes.brew.resume") : t("recipes.brew.start") }}
         </button>
-        <button v-else class="rounded-md bg-crema px-6 py-2 font-medium text-espresso transition hover:bg-white" @click="pause">Pause</button>
-        <button v-if="!started" class="rounded-md border border-crema/30 px-4 py-2 transition hover:border-crema/60" @click="next">Next</button>
-        <button v-if="started" class="rounded-md border border-crema/30 px-4 py-2 text-sm transition hover:border-crema/60" @click="reset">Reset</button>
+        <button v-else class="rounded-md bg-crema px-6 py-2 font-medium text-espresso transition hover:bg-white" @click="pause">{{ t("recipes.brew.pause") }}</button>
+        <button v-if="!started" class="rounded-md border border-crema/30 px-4 py-2 transition hover:border-crema/60" @click="next">{{ t("recipes.brew.next") }}</button>
+        <button v-if="started" class="rounded-md border border-crema/30 px-4 py-2 text-sm transition hover:border-crema/60" @click="reset">{{ t("recipes.brew.reset") }}</button>
       </div>
 
       <ol class="mt-8 w-full max-w-md space-y-1 text-sm sm:mt-10">
