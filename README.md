@@ -1,4 +1,4 @@
-# ☕ Coffee Vault & Recipe Prototyper
+# Coffee Vault & Recipe Prototyper
 
 A modern, fully containerized, **self-hosted** web application for hardcore specialty coffee enthusiasts, home baristas, and bean collectors. Everything — data, photos, OCR — runs on your own hardware. No cloud account, no subscription, no external service required.
 
@@ -6,7 +6,7 @@ It manages the complete lifecycle of a coffee bean: from purchase and automated 
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 ### 1. Intelligent Bean Import (Web Scraping & OCR)
 Forget manual data entry:
@@ -28,7 +28,7 @@ Recipes built for competition-level brewing:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 A distributed, containerized architecture running entirely via **Docker Compose**:
 
@@ -42,7 +42,7 @@ There's no public sign-up. A single admin account (plus any others you list) is 
 
 ---
 
-## 🚀 Quick Start (Local Deployment)
+## Quick Start (Local Deployment)
 
 Designed for easy deployment on a home server — Raspberry Pi, NAS, or any local machine.
 
