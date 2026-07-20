@@ -10,7 +10,7 @@ It manages the complete lifecycle of a coffee bean: from purchase and automated 
 
 ### 1. Intelligent Bean Import (Web Scraping & OCR)
 Forget manual data entry:
-* **Web scraping** — paste a product URL (Kofio.cz or any other public roaster page) and the parser pulls out roaster, origin, variety, process, roast level, and tasting notes automatically.
+* **Web scraping** — paste a product URL (Kofio.cz/Kofio.co or any other public roaster page) and the parser pulls out roaster, origin, variety, process, roast level, and tasting notes automatically.
 * **OCR import** — no listing online? Photograph the bag (up to 3 photos) and the built-in OCR engine reads the label text and pre-fills what it can recognize.
 * **Structured metadata** — sub-varieties (Castillo, SL28 Peaberry, 74158...), processing details (co-ferment, anaerobic, thermal shock...), and tasting notes all land in searchable, taggable fields.
 
